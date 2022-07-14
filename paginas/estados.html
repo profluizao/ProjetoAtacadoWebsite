@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        var estados = [];
+
+        function CarregarEstados() {
+            var urlServico = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados';
+            $.ajax({
+                type: "GET",
+                url: urlServico,
+                async: false,
+                data: null,
+                cache: false,
+                success: function (retorno) {
+                    if (retorno.lenght == 0) {
+                        alert("Erro ao obter os dados.");
+                    }
+                    else {
+                        //console.log(retorno);
+                        for (var i = 0; i < length; i++) {
+                            var estado = retorno[i];
+                            var id = estado.id;
+                            var sigla = estado.sigla;
+                            var nome = estado.nome;
+                        }
+                    }
+                }
+            });
+        }
+
+        function Testar() {
+            alert('Testando o javascript!!!');
+        }
+
+    </script>
+</head>
+<body>
+    <h1>Estados</h1>
+    <br />
+    <button id="btnCarregar" type="button" onclick="CarregarEstados();">Carregar</button>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Sigla</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <p><a href="../index.html">Voltar</a></p>
+
+    <buton id="btnTestar" onclick="Testar();">Teste</buton>
+
+
+</body>
+</html>
