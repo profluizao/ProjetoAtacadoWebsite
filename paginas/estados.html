@@ -5,28 +5,32 @@
     <title></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        var estados = [];
-
+        $(document).ready(
+            CarregarEstados()
+        );
         function CarregarEstados() {
             var urlServico = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados';
-            $.ajax({
-                type: "GET",
-                url: urlServico,
-                async: false,
-                data: null,
-                cache: false,
-                success: function (retorno) {
-                    if (retorno.lenght == 0) {
-                        alert("Erro ao obter os dados.");
-                    }
-                    else {
-                        //console.log(retorno);
-                        for (var i = 0; i < length; i++) {
-                            var estado = retorno[i];
-                            var id = estado.id;
-                            var sigla = estado.sigla;
-                            var nome = estado.nome;
-                        }
+            $.get(urlServico, function (retorno, status) {
+                var keys = Object.keys(retorno);
+                if (keys.lenght == 0) {
+                    alert("Erro ao obter os dados.");
+                }
+                else {
+                    for (var i = 0; i < keys.length; i++) {
+                        var estado = retorno[i];
+                        var id = estado.id;
+                        var sigla = estado.sigla;
+                        var nome = estado.nome;
+
+                        var linhaINI = "<tr>";
+                        var colunaID = "<td>" + id + "</td>";
+                        var colunaSIGLA = "<td>" + sigla + "</td>";
+                        var colunaNOME = "<td>" + nome + "</td>";
+                        var linhaFIM = "</tr>";
+
+                        var linha = linhaINI + colunaID + colunaSIGLA + colunaNOME + linhaFIM;
+
+                        $("#tblEstados tbody").append(linha);
                     }
                 }
             });
@@ -41,21 +45,20 @@
 <body>
     <h1>Estados</h1>
     <br />
-    <button id="btnCarregar" type="button" onclick="CarregarEstados();">Carregar</button>
-    <table>
+    <!--
+        <button id="btnCarregar" type="button" onclick="CarregarEstados();">Carregar</button>
+    -->
+    <table id="tblEstados">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Nome</th>
                 <th>Sigla</th>
+                <th>Nome</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
     <p><a href="../index.html">Voltar</a></p>
-
     <buton id="btnTestar" onclick="Testar();">Teste</buton>
-
-
 </body>
 </html>
