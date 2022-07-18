@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script>
+
+            var estado = '';
+
+            $(document).ready(function(){
+                ExibirUF();
+                CarregarMunicipiosPorUF(estado.id);
+            });
+
+            function ExibirUF() {
+                var tmp = localStorage.getItem("ufselecionada");
+                estado = JSON.parse(tmp);
+
+                var id = estado.id;
+                var nome = estado.nome;
+                var sigla = estado.sigla;
+                var regiaoid = estado.regiao.id;
+                var regiaonome = estado.regiao.nome;
+                var regiaosigla = estado.regiao.sigla;
+
+                $('#txtID').val(id);
+                $('#txtNOME').val(nome);
+                $('#txtSIGLA').val(sigla);
+            }
+
+            function CarregarMunicipiosPorUF(iduf) {
+                var urlServico = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/' + iduf + '/municipios';
+                $.get(urlServico, function(retorno, status){
+                    var keys = Object.keys(retorno);
+                    if (keys.lenght == 0) {
+                        alert("Erro ao obter os dados.");
+                    }
+                    else {
+                        for (var i = 0; i < keys.length; i++) {
+                            var municipio = retorno[i];
+                            var id = municipio.id;
+                            var nome = municipio.nome;
+
+                            var linhaINI = "<tr>";
+                            var colunaID = "<td>" + id + "</td>";
+                            var colunaNOME = "<td>" + nome + "</td>";
+                            var linhaFIM = "</tr>";
+
+                            var linha = linhaINI + colunaID + colunaNOME + linhaFIM;
+
+                            $("#tblMunicipios tbody").append(linha);
+                        }
+                    }
+                });
+            }
+
+        </script>        
+    </head>
+    <body>
+        <div>
+            <p>
+                <input type="text" id="txtID" name="txtID" value="." />
+                <input type="text" id="txtNOME" name="txtNOME" value="." />
+                <input type="text" id="txtSIGLA" name="txtSIGLA" value="." />
+            </p>
+        </div>
+        <div>
+            <table id="tblMunicipios">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </body>
+</html>
