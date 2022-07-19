@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title></title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script lang="javascript">
+            
+            $(document).ready( function(){ 
+                LoadUsers();
+
+                $('#ddlUSER').change(function() {
+                    $("#tblCOMM tbody").empty()
+                    var iduser = $('#ddlUSER option:selected').val();
+                    LoadPosts(iduser);
+                });
+
+                $('#ddlPOST').change(function() {
+                    var idpost = $('#ddlPOST option:selected').val();
+                    LoadComments(idpost);
+                });
+            });
+
+            function LoadUsers(){
+                var urlServico = 'https://jsonplaceholder.typicode.com/users';
+                $.get(urlServico, function(retorno, status) {
+                    var keys = Object.keys(retorno);
+                    if (keys.lenght == 0) {
+                        alert("Erro ao obter os dados.");
+                    }
+                    else {
+                        for (var i = 0; i < keys.length; i++) {
+                            var user = retorno[i];
+                            var texto = user.name  + ' - ' + user.email;
+                            var opcao = '<option value="' + user.id + '">' + texto + '</option>';
+                            $('#ddlUSER').append(opcao);
+                        }
+                    }
+                });
+            }
+
+            function LoadPosts(userid) {
+                urlServico = 'https://jsonplaceholder.typicode.com/users/' + userid + '/posts';
+                $.get(urlServico, function(retorno, status) {
+                    var keys = Object.keys(retorno);
+                    if (keys.lenght == 0) {
+                        alert("Erro ao obter os dados.");
+                    }
+                    else {
+                        $('#ddlPOST').empty();
+                        for (var i = 0; i < keys.length; i++) {
+                            var post = retorno[i];
+                            var opcao = '<option value="' + post.id + '">' + post.title + '</option>';
+                            $('#ddlPOST').append(opcao);
+                        }
+                    }
+                });
+            }
+
+            function LoadComments(postid) {
+                urlServico = 'https://jsonplaceholder.typicode.com/posts/' + postid + '/comments';
+                $.get(urlServico, function(retorno, status) {
+                    var keys = Object.keys(retorno);
+                    if (keys.lenght == 0) {
+                        alert("Erro ao obter os dados.");
+                    }
+                    else {
+                        $('#ddlCOMM').empty();
+                        for (var i = 0; i < keys.length; i++) {
+                            var comm = retorno[i];
+                            var linha = '';
+                            linha += '<tr>';
+                            linha += '<td>' + comm.id + '</td>';
+                            linha += '<td>' + comm.name + '</td>';
+                            linha += '<td>' + comm.email + '</td>';
+                            linha += '<td>' + comm.body + '</td>';
+                            linha += '</tr>';
+                            $("#tblCOMM tbody").append(linha);                           
+                        }
+                    }                    
+                });
+            }
+
+        </script>
+    </head>
+    <body>
+        <div>
+            <div>
+                <label for="ddlUSER">Users:</label>
+                <select id="ddlUSER">
+                    <option value="0">Select a User</option>
+                </select>
+            </div>
+            <div>
+                <label for="ddlPOST">Posts:</label>
+                <select id="ddlPOST">
+                    <option value="0">Select a Post</option>
+                </select>
+            </div>
+            <div>
+                <label for="tblCOMM">Comments:</label>
+                <table id="tblCOMM" name="tblCOMM">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NAME</th>
+                            <th>EMAIL</th>
+                            <th>BODY</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
